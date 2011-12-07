@@ -1,0 +1,25 @@
+From 30549d35679e44837b22c40dfb53a88b69527248 Mon Sep 17 00:00:00 2001
+From: Richard Hughes <richard@hughsie.com>
+Date: Tue, 4 May 2010 14:59:02 +0100
+Subject: [PATCH] yum: ensure we catch the exception if there are no groups. Fixes rh#587196
+
+---
+ backends/yum/yumBackend.py |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/backends/yum/yumBackend.py b/backends/yum/yumBackend.py
+index 28652cf..9852e2d 100755
+--- a/backends/yum/yumBackend.py
++++ b/backends/yum/yumBackend.py
+@@ -821,6 +821,8 @@ class PackageKitYumBackend(PackageKitBaseBackend, PackagekitPackage):
+             cats = self.yumbase.comps.categories
+         except yum.Errors.RepoError, e:
+             self.error(ERROR_NO_CACHE, "failed to get comps list: %s" %_to_unicode(e), exit=False)
++        except yum.Errors.GroupsError, e:
++            self.error(ERROR_GROUP_LIST_INVALID, "Failed to get groups list: %s" %_to_unicode(e), exit=False)
+         except Exception, e:
+             self.error(ERROR_INTERNAL_ERROR, _format_str(traceback.format_exc()))
+         else:
+-- 
+1.7.0.1
+

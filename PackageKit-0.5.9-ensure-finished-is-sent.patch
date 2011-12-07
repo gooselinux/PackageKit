@@ -1,0 +1,19 @@
+commit c8a70fc3b899cdb31036138d035c4eea88af5953
+Author: Richard Hughes <richard@hughsie.com>
+Date:   Fri Mar 26 09:26:19 2010 +0000
+
+    Ensure the Package(finished) signal is always sent during the transaction. Fixes rh#522628
+
+diff --git a/src/pk-backend.c b/src/pk-backend.c
+index d97a434..34df724 100644
+--- a/src/pk-backend.c
++++ b/src/pk-backend.c
+@@ -892,7 +892,7 @@ pk_backend_package_emulate_finished_for_package (PkBackend *backend, PkPackage *
+ 	}
+ 
+ 	/* same package, just info change */
+-	if (pk_package_equal_id (backend->priv->last_package, item) == 0) {
++	if (pk_package_equal_id (backend->priv->last_package, item)) {
+ 		egg_debug ("same package_id, ignoring");
+ 		goto out;
+ 	}

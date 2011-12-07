@@ -1,0 +1,38 @@
+commit 8bf6bbe200f11abe4c527c7cf0aeb270aaec19f5
+Author: Richard Hughes <richard@hughsie.com>
+Date:   Tue Mar 30 17:07:25 2010 +0100
+
+    yum: Do not abort if the package-id is not unique in the reposet
+    
+    This can happen if you do 'ln -s newpackage oldpackage' and then run
+    createrepo. Fixes rh#569460
+
+diff --git a/backends/yum/yumBackend.py b/backends/yum/yumBackend.py
+index 42dc70c..0d608ed 100755
+--- a/backends/yum/yumBackend.py
++++ b/backends/yum/yumBackend.py
+@@ -1008,16 +1008,16 @@ class PackageKitYumBackend(PackageKitBaseBackend, PackagekitPackage):
+         except Exception, e:
+             raise PkError(ERROR_INTERNAL_ERROR, _format_str(traceback.format_exc()))
+ 
+-    # multiple entries
+-        if len(pkgs) > 1:
+-            raise PkError(ERROR_INTERNAL_ERROR, "more than one package match for %s" % _format_package_id(package_id))
++        # nothing found
++        if len(pkgs) == 0:
++            return None, False
+ 
+-        # one NEVRA in a single repo
+-        if len(pkgs) == 1:
+-            return pkgs[0], False
++        # multiple entries
++        if len(pkgs) > 1:
++            self.message(MESSAGE_COULD_NOT_FIND_PACKAGE, "more than one package match for %s" % _format_package_id(package_id))
+ 
+-        # nothing found
+-        return None, False
++        # return first entry
++        return pkgs[0], False
+ 
+     def get_requires(self, filters, package_ids, recursive):
+         '''

@@ -1,0 +1,22 @@
+--- PackageKit-0.5.8/backends/yum/yumBackend.py	2010-08-23 12:44:27.000000000 +0200
++++ PackageKit-0.5.8/backends/yum/yumBackend.py	2010-08-23 16:13:58.000000000 +0200
+@@ -2619,12 +2619,13 @@ class PackageKitYumBackend(PackageKitBas
+                         else:
+                             urls['vendor'].append("%s;%s" % (href, title))
+ 
+-            # add link to bohdi if available
+-            if notice['update_id']:
+-                releasever = self.yumbase.conf.yumvar['releasever']
+-                href = "https://admin.fedoraproject.org/updates/F%s/%s" % (releasever, notice['update_id'])
+-                title = "%s Update %s" % (notice['release'], notice['update_id'])
+-                urls['vendor'].append("%s;%s" % (href, title))
++            # add link to bodhi if available, only if update is from updates@fedoraproject.org
++            if notice['from'] and notice['from'].find('updates@fedoraproject.org') != -1:
++                if notice['update_id']:
++                    releasever = self.yumbase.conf.yumvar['releasever']
++                    href = "https://admin.fedoraproject.org/updates/F%s/%s" % (releasever, notice['update_id'])
++                    title = "%s Update %s" % (notice['release'], notice['update_id'])
++                    urls['vendor'].append("%s;%s" % (href, title))
+ 
+             # other interesting data:
+             changelog = ''

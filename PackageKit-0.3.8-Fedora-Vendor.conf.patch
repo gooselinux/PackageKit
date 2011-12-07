@@ -1,0 +1,33 @@
+diff -up PackageKit-0.3.8/etc/Vendor.conf.BAD PackageKit-0.3.8/etc/Vendor.conf
+--- PackageKit-0.3.8/etc/Vendor.conf.BAD	2008-10-24 16:02:00.000000000 -0400
++++ PackageKit-0.3.8/etc/Vendor.conf	2008-10-24 17:49:27.000000000 -0400
+@@ -12,7 +12,7 @@
+ # If the value is set to 'none' then no link is shown.
+ #
+ # default=http://www.packagekit.org/pk-package-not-found.html
+-DefaultUrl=http://www.packagekit.org/pk-package-not-found.html
++DefaultUrl=none
+ 
+ # The URL which is shown to the user when a codec could not be found.
+ # It should explain why certain codecs cannot be used, and perhaps show
+@@ -47,17 +47,17 @@ FontUrl=none
+ # If the value is set to 'none' then the value of DefaultUrl is used.
+ #
+ # default=none
+-MimeUrl=none
++MimeUrl=none
+ 
+ [Groups]
+ 
+ # The vendor name shown for the 'vendor' group
+ #
+ # default=My Vendor
+-VendorName=My Vendor
++VendorName=Red Hat Enterprise Linux
+ 
+ # The vendor icon name shown for the 'vendor' group
+ #
+ # default=emblem-favorite
+-VendorIcon=emblem-favorite
++VendorIcon=fedora-logo-small
+ 

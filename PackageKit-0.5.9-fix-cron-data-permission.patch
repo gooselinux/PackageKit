@@ -1,0 +1,29 @@
+From cca0208ec1cb6291c823a74709e44e3dc674b176 Mon Sep 17 00:00:00 2001
+From: Richard Hughes <richard@hughsie.com>
+Date: Wed, 5 May 2010 17:12:23 +0100
+Subject: [PATCH] Fix the permission of /etc/sysconfig/packagekit-background to be non-executable
+
+---
+ contrib/cron/Makefile.am           |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+ mode change 100755 => 100644 contrib/cron/packagekit-background
+
+diff --git a/contrib/cron/Makefile.am b/contrib/cron/Makefile.am
+index 42ab26b..a950847 100644
+--- a/contrib/cron/Makefile.am
++++ b/contrib/cron/Makefile.am
+@@ -2,7 +2,7 @@ cronfiledir = ${SYSCONFDIR}/cron.daily
+ cronfile_SCRIPTS = packagekit-background.cron
+ 
+ crondatadir = ${SYSCONFDIR}/sysconfig
+-crondata_SCRIPTS = packagekit-background
++crondata_DATA = packagekit-background
+ 
+ EXTRA_DIST =						\
+ 	packagekit-background				\
+diff --git a/contrib/cron/packagekit-background b/contrib/cron/packagekit-background
+old mode 100755
+new mode 100644
+-- 
+1.7.0.1
+

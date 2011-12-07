@@ -1,0 +1,203 @@
+From af45363bfd4a6ecf2584163f91aeb812f26cd7c4 Mon Sep 17 00:00:00 2001
+From: Richard Hughes <richard@hughsie.com>
+Date: Tue, 3 Aug 2010 10:06:06 -0400
+Subject: [PATCH 1/2] Add more strict security policy
+
+We don't want to implicitly allow updating packages and
+accepting EULAs in RHEL.
+---
+ policy/org.freedesktop.packagekit.policy.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/policy/org.freedesktop.packagekit.policy.in b/policy/org.freedesktop.packagekit.policy.in
+index 7d59fb3..75cbc1c 100644
+--- a/policy/org.freedesktop.packagekit.policy.in
++++ b/policy/org.freedesktop.packagekit.policy.in
+@@ -93,7 +93,7 @@
+     <defaults>
+       <allow_any>no</allow_any>
+       <allow_inactive>no</allow_inactive>
+-      <allow_active>yes</allow_active>
++      <allow_active>auth_admin</allow_active>
+     </defaults>
+   </action>
+ 
+@@ -131,7 +131,7 @@
+     <defaults>
+       <allow_any>no</allow_any>
+       <allow_inactive>no</allow_inactive>
+-      <allow_active>yes</allow_active>
++      <allow_active>auth_admin_keep</allow_active>
+     </defaults>
+   </action>
+ 
+-- 
+1.7.1
+
+
+From 031cbee8d8053abc9a70648f1039d1998abf43a3 Mon Sep 17 00:00:00 2001
+From: Ray Strode <rstrode@redhat.com>
+Date: Tue, 3 Aug 2010 10:08:39 -0400
+Subject: [PATCH 2/2] Allow remote access after supplying root password
+
+In most cases, users user their nearby computer via a locally
+connected keyboard and mouse.  In this case, we allow users to
+install packages and perform other packagekit related
+administrative tasks.
+
+There are some scenarios, however, where a user is connected
+remotely, via VNC or similar.  In those cases, the default
+policy has been to make PackageKit fail.
+
+This commit changes those remote scenarios to succeed, as long
+as the user is able to provide an administrative password.
+
+The rationale is two part:
+
+- If the user can 'su to root' anyway, and they can install
+packages via other means once root, then we haven't added any
+new risk by allowing them to install packages with PackageKit
+after typing the root password.
+
+- The out of the box experience (for the admittedly niche case)
+of remote sessions is less than ideal if PackageKit fails.
+---
+ policy/org.freedesktop.packagekit.policy.in |   52 +++++++++++++-------------
+ 1 files changed, 26 insertions(+), 26 deletions(-)
+
+diff --git a/policy/org.freedesktop.packagekit.policy.in b/policy/org.freedesktop.packagekit.policy.in
+index 75cbc1c..1db9877 100644
+--- a/policy/org.freedesktop.packagekit.policy.in
++++ b/policy/org.freedesktop.packagekit.policy.in
+@@ -23,8 +23,8 @@
+     <_message>Authentication is required to cancel a task that was not started by yourself</_message>
+     <icon_name>package-x-generic</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin_keep</allow_active>
+     </defaults>
+   </action>
+@@ -40,8 +40,8 @@
+     <_message>Authentication is required to install a signed package</_message>
+     <icon_name>package-x-generic</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin_keep</allow_active>
+     </defaults>
+   </action>
+@@ -57,8 +57,8 @@
+     <_message>Authentication is required to install an untrusted package</_message>
+     <icon_name>package-x-generic</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin</allow_active>
+     </defaults>
+   </action>
+@@ -74,8 +74,8 @@
+     <_message>Authentication is required to consider a key used for signing packages as trusted</_message>
+     <icon_name>package-x-generic</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin</allow_active>
+     </defaults>
+   </action>
+@@ -91,8 +91,8 @@
+     <_message>Authentication is required to accept a EULA</_message>
+     <icon_name>package-x-generic</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin</allow_active>
+     </defaults>
+   </action>
+@@ -111,8 +111,8 @@
+     <_message>Authentication is required to remove packages</_message>
+     <icon_name>package-x-generic</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin_keep</allow_active>
+     </defaults>
+   </action>
+@@ -129,8 +129,8 @@
+     <_message>Authentication is required to update packages</_message>
+     <icon_name>package-x-generic</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin_keep</allow_active>
+     </defaults>
+   </action>
+@@ -145,8 +145,8 @@
+     <_message>Authentication is required to rollback a transaction</_message>
+     <icon_name>package-x-generic</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin</allow_active>
+     </defaults>
+   </action>
+@@ -161,8 +161,8 @@
+     <_message>Authentication is required to change software source parameters</_message>
+     <icon_name>package-x-generic</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin_keep</allow_active>
+     </defaults>
+   </action>
+@@ -176,8 +176,8 @@
+     <_message>Authentication is required to refresh the system sources</_message>
+     <icon_name>package-x-generic</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+@@ -191,8 +191,8 @@
+     <_message>Authentication is required to set the network proxy used for downloading packages</_message>
+     <icon_name>preferences-system-network-proxy</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>yes</allow_active>
+     </defaults>
+   </action>
+@@ -208,8 +208,8 @@
+     <_message>Authentication is required to change the location used to decompress packages</_message>
+     <icon_name>security-high</icon_name>
+     <defaults>
+-      <allow_any>no</allow_any>
+-      <allow_inactive>no</allow_inactive>
++      <allow_any>auth_admin</allow_any>
++      <allow_inactive>auth_admin</allow_inactive>
+       <allow_active>auth_admin_keep</allow_active>
+     </defaults>
+   </action>
